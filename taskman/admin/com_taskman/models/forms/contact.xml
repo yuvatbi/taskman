@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+        <fieldset>
+                <field
+                        name="id"
+                        type="hidden"
+                        required="true"
+                />
+                <field
+                        name="name"
+                        type="text"
+                        label="HELLOWORLD_MSGS_NAME"
+                        description="HELLOWORLD_MSGS_NAME"
+                        size="40"
+                        class="inputbox"
+                        default=""
+                        required="true"
+                />
+                <field
+                        name="email"
+                        type="text"
+                        label="HELLOWORLD_MSGS_EMAIL"
+                        description="HELLOWORLD_MSGS_EMAIL"
+                        size="40"
+                        class="inputbox"
+                        default=""
+                        required="true"
+                />
+             
+                       
+                       
+                <field 
+						name="bio" 
+						label ="HELLOWORLD_MSGS_BIO" 
+						type="editor" 
+						width="300" 
+						filter="safehtml" 
+						hide="true"
+						buttons="article,pagebreak,readmore"
+						
+				/>
+				
+				
+				<field 
+						name="dob" 
+						type="calendar" 
+						default="" 
+						label="HELLOWORLD_MSGS_DOB" 
+						description="" 
+						format="%Y-%m-%d" 
+				/>
+				
+				
+				<field
+                        name="password"
+                        type="password"
+                        label="HELLOWORLD_MSGS_PASSWORD"
+                        description="HELLOWORLD_MSGS_PASSWORD"
+                        size="40"
+                        class="inputbox"
+                        default=""
+                        required="true"
+                />
+                
+
+
+
+				<field
+                        name="gender"
+                        type="radio"
+                        label="HELLOWORLD_MSGS_GENDER"
+                        description="HELLOWORLD_MSGS_GENDER"
+                        default="1"
+                       >
+                       <option value="1"> Male</option>
+                       <option value="0"> Female</option>
+                       </field>
+                       
+                       
+				<field name="image"  label="HELLOWORLD_MSGS_IMAGE" type="file" directory="stories" />
+				
+				<field
+                        name="published"
+                        type="list"
+                        label="HELLOWORLD_MSGS_PUBLISH"
+                        description="HELLOWORLD_MSGS_PUBLISH"
+                        default="1"
+                       >
+                       <option value="1"> publish </option>
+                       <option value="0"> unpublish </option>
+                       </field>
+                
+                
+                
+        </fieldset>
+        
+        
+       
+        
+</form>
