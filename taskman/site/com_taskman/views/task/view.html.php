@@ -4,6 +4,7 @@ defined('_JEXEC') or die('Restricted access');
  
 // import Joomla view library
 jimport('joomla.application.component.view');
+JLoader::register('JToolbarHelper', JPATH_ADMINISTRATOR.'/includes/toolbar.php');
  
 /**
  * HelloWorld View
@@ -33,6 +34,7 @@ class TaskManViewTask extends JViewLegacy
                 // Assign the Data
                 $this->form = $form;
                 $this->item = $item;
+                //print_r($item);
  
                 // Set the toolbar
                 $this->addToolBar();

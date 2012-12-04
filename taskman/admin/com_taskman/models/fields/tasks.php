@@ -9,14 +9,14 @@ JFormHelper::loadFieldClass('list');
 /**
  * HelloWorld Form Field class for the HelloWorld component
  */
-class JFormFieldTask extends JFormFieldList
+class JFormFieldTasks extends JFormFieldList
 {
         /**
          * The field type.
          *
          * @var         string
          */
-        protected $type = 'Task';
+        protected $type = 'Tasks';
  
         /**
          * Method to get a list of options for a list input.
@@ -27,16 +27,17 @@ class JFormFieldTask extends JFormFieldList
         {
                 $db = JFactory::getDBO();
                 $query = $db->getQuery(true);
-                $query->select('task_id');
-                $query->from('#__taskman_task');
+                $query->select('task_id,title');
+                $query->from('#__taskman_tasks');
                 $db->setQuery((string)$query);
                 $messages = $db->loadObjectList();
+                //print_r($messages);exit;
                 $options = array();
                 if ($messages)
                 {
                         foreach($messages as $message) 
                         {
-                                $options[] = JHtml::_('select.option', $message->id);
+                                $options[] = JHtml::_('select.option', $message->task_id,$message->title);
                         }
                 }
                 $options = array_merge(parent::getOptions(), $options);
