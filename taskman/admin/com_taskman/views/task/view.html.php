@@ -48,7 +48,7 @@ class TaskManViewTask extends JViewLegacy
         protected function addToolBar() 
         {
                 $input = JFactory::getApplication()->input;
-                $input->set('hidemainmenu', true);
+                //$input->set('hidemainmenu', true);
                 $isNew = ($this->item->task_id == 0);
                 JToolBarHelper::title($isNew ? JText::_('COM_HELLOWORLD_MANAGER_HELLOWORLD_NEW')
                                              : JText::_('COM_HELLOWORLD_MANAGER_HELLOWORLD_EDIT'));

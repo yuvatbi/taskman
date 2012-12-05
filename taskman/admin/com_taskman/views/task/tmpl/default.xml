@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+        <layout title="TASKMAN_SITE_MENU_TITLE">
+                <message>
+                        <![CDATA[TASKMAN_SITE_MENU_TITLE_DESC]]>
+                </message>
+        </layout>
+        
+        
+         <fields name="request"
+         	addfieldpath="/administrator/components/com_taskman/models/fields"
+         >
+                <fieldset name="request"       
+                >
+                        <field
+                                name="task_id"
+                                type="tasks"
+                                label="TASKMAN_LIST_MENU"
+                                description="TASKMAN_LIST_MENU_DESC"
+                                default="1"
+                        >
+                   
+                        </field>
+                </fieldset>
+        </fields>
+        
+</metadata>

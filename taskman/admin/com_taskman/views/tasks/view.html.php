@@ -65,13 +65,7 @@ class TaskManViewTasks extends JViewLegacy
 			JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.state'), true)
 		);
 
-		$filter_name_options = $this->get('NameOptions');
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_PUBLISHED'),
-			'filter_name',
-			JHtml::_('select.options', $filter_name_options, 'value', 'text', $this->state->get('filter.name'), true)
-		);
-
+	
 		
                      
         }
