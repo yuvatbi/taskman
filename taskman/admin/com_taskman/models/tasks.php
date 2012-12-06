@@ -33,7 +33,7 @@ class TaskManModelTasks extends JModelList
                 $query = $db->getQuery(true);
                 
                 // Select some fields
-	                $query->select('task_id,title,notes,asignee,projects,subtasks,comments,duedate,tags,file,followers,follow,feed');
+	                $query->select('task_id,title,notes,asignee,projects,subtasks,comments,duedate,tags,file,followers,follow,feed,state');
 	                // From the hello table
 	                $query->from('#__taskman_tasks');
 	                

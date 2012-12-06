@@ -7,6 +7,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('bootstrap.tooltip');
 JHtml::_('behavior.multiselect');
 JHtml::_('formbehavior.chosen', 'select');
+jimport( 'joomla.html.html.jgrid' );
 
 $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
@@ -43,6 +44,90 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 	}
 
 
+
+	function saveDate(cal,id) {
+		var data = {
+			task_id: id,
+			duedate: $(cal).value,
+			};
+		jQuery.ajax({
+			type: "POST",
+			url: "<?php echo JURI::base();?>index.php?option=com_taskman&view=task&task=task.saveDate",
+			data: data,
+			success: function(response)
+			{
+				jQuery("#duedate_result").html(response);
+			}
+		});
+		return false;
+	}
+
+	
+
+	function saveProject(id) {
+		var data = {
+			task_id: id,
+			projectname: document.getElementById('valtext'+id).value,
+			};
+		jQuery.ajax({
+			type: "POST",
+			url: "<?php echo JURI::base();?>index.php?option=com_taskman&view=task&task=task.saveProject",
+			data: data,
+			success: function(response)
+			{
+				jQuery("#distext"+id).html(response);
+				document.getElementById('protext'+id).style.display = 'none';
+			}
+		});
+		return false;
+	}
+
+
+	function markComplete(id) {
+
+		document.getElementById('task_content'+id).style.display = 'none';
+		document.getElementById('rowdis'+id).style.backgroundColor ='lightgreen'
+	}
+	
+
+	
+
+	function saveTags(id) {
+		var data = {
+			task_id: id,
+			tagname: document.getElementById('valtags'+id).value,
+			};
+		
+		jQuery.ajax({
+			type: "POST",
+			url: "<?php echo JURI::base();?>index.php?option=com_taskman&view=task&task=task.saveTags",
+			data: data,
+			success: function(response)
+			{
+				jQuery("#distag"+id).html(response);
+				document.getElementById('tagsshow'+id).style.display = 'none';
+			}
+		});
+		return false;
+	}
+
+
+
+	function changedata(val,id)
+	{
+		if(val == 1)
+		{
+			document.getElementById('protext'+id).style.display = 'block';
+			document.getElementById('protexthide'+id).style.display = 'none';
+		}
+		else if(val == 2)
+		{
+				alert(val);
+			document.getElementById('tagsshow'+id).style.display = 'block';
+			document.getElementById('tagshide'+id).style.display = 'none';
+		}
+	}
+	
 	Joomla.orderTable = function() {
 		table = document.getElementById("sortTable");
 		direction = document.getElementById("directionTable");
@@ -78,9 +163,51 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 	padding-bottom: 10px;
 }
 
+
+
+<?php foreach($this->items as $i => $item): $canChange=1;
+							$id = $item->task_id;
+							$yy =0;
+							foreach($this->items as $i => $item): $canChange=1;
+							$yy = $yy+1;
+							endforeach;
+							echo "#protext".$id;
+
+								if($id != $yy)
+									echo ",";
+							
+							
+				
+					 endforeach; ?> {
+	display: none;
+	padding-bottom: 10px;
+}
+					 
+	
+	
+	<?php foreach($this->items as $i => $item): $canChange=1;
+							$id = $item->task_id;
+							$yy =0;
+							foreach($this->items as $i => $item): $canChange=1;
+							$yy = $yy+1;
+							endforeach;
+							echo "#tagsshow".$id;
+
+								if($id != $yy)
+									echo ",";
+							
+							
+				
+					 endforeach; ?> {
+	display: none;
+	padding-bottom: 10px;
+}				 
+
 #distext,#distag {
 	text-decoration: bold;
 }
+
+
 </style>
 
 
@@ -98,69 +225,17 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 		<div id="j-main-container">
 			<?php endif;?>
 
-			<div id="filter-bar" class="btn-toolbar">
-				<div class="filter-search btn-group pull-left">
-					<label for="filter_search" class="element-invisible"><?php echo JText::_('COM_WEBLINKS_SEARCH_IN_TITLE');?>
-					</label> <input type="text" name="filter_search" id="filter_search"
-						placeholder="<?php echo JText::_('HELLOWORLD_TASK_SEARCH'); ?>"
-						value="<?php echo $this->escape($this->state->get('filter.search')); ?>"
-						title="<?php echo JText::_('COM_WEBLINKS_SEARCH_IN_TITLE'); ?>" />
-				</div>
-				<div class="btn-group pull-left">
-					<button class="btn hasTooltip" type="submit"
-						title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
-						<i class="icon-search"></i>
-					</button>
-					<button class="btn hasTooltip" type="button"
-						title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"
-						onclick="document.id('filter_search').value='';this.form.submit();">
-						<i class="icon-remove"></i>
-					</button>
-				</div>
-				<div class="btn-group pull-right hidden-phone">
-					<label for="limit" class="element-invisible"><?php echo JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC');?>
-					</label>
-					<?php echo $this->pagination->getLimitBox(); ?>
-				</div>
-				<div class="btn-group pull-right hidden-phone">
-					<label for="directionTable" class="element-invisible"><?php echo JText::_('JFIELD_ORDERING_DESC');?>
-					</label> <select name="directionTable" id="directionTable"
-						class="input-medium" onchange="Joomla.orderTable()">
-						<option value="">
-							<?php echo JText::_('JFIELD_ORDERING_DESC');?>
-						</option>
-						<option value="asc"
-						<?php if ($listDirn == 'asc') echo 'selected="selected"'; ?>>
-							<?php echo JText::_('JGLOBAL_ORDER_ASCENDING');?>
-						</option>
-						<option value="desc"
-						<?php if ($listDirn == 'desc') echo 'selected="selected"'; ?>>
-							<?php echo JText::_('JGLOBAL_ORDER_DESCENDING');?>
-						</option>
-					</select>
-				</div>
-				<div class="btn-group pull-right">
-					<label for="sortTable" class="element-invisible"><?php echo JText::_('JGLOBAL_SORT_BY');?>
-					</label> <select name="sortTable" id="sortTable"
-						class="input-medium" onchange="Joomla.orderTable()">
-						<option value="">
-							<?php echo JText::_('JGLOBAL_SORT_BY');?>
-						</option>
-						<?php echo JHtml::_('select.options', $sortFields, 'value', 'text', $listOrder);?>
-					</select>
-				</div>
-			</div>
-			<div class="clearfix"></div>
+			
 
-			<div class="span5">
+			<div class="span6">
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th width="5">
+							<th width="20">
 								<!-- arg1-text, arg2-db query name, arg3,4 ordering default values -->
 								<?php echo JHtml::_('grid.sort', 'TASKMAN_TASKS_ID', 'task_id', $listDirn, $listOrder); ?>
 							</th>
-							<th width="20"><input type="checkbox" name="toggle" value=""
+							<th width="10"><input type="checkbox" name="toggle" value=""
 								onclick="Joomla.checkAll(this)" />
 							</th>
 
@@ -191,15 +266,17 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 						$canChange=1;
 
 						?>
-
-						<tr class="row<?php echo $i % 2; ?>">
+						
+						<tr class="row<?php echo $i % 2; ?>" id="rowdis<?php echo $item->task_id; ?>"  >
 							<td><?php echo $item->task_id; ?>
 							</td>
 							<td><?php echo JHtml::_('grid.id', $i, $item->task_id); ?>
 							</td>
 
 
-							<td></td>
+							<td>
+							<?php echo JHtml::_('jgrid.published', $item->state, $i, 'tasks.', $canChange, 'cb'); ?>
+							</td>
 							<td><?php echo $item->title; ?>
 							</td>
 
@@ -208,6 +285,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 							</td>
 
 						</tr>
+						
 						<?php endforeach; ?>
 
 					</tbody>
@@ -236,23 +314,30 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 			?>
 
 			<div class="span6 row-stripped" id="task_content<?php echo $item->task_id; ?>">
+				<input type="hidden" name="taskid" id="taskid" value="<?php echo $item->task_id; ?>" />
 				<div class="row-fluid">
 
 					<div class="well ">
 
+					
+					
+					
 
 						<div class="row-fluid ">
 							<div class="span12">
-
+							<div class="span1 pull-right"  onclick="markComplete(<?php echo $item->task_id; ?>)">
+										<i class="icon-ok btn" ></i>
+								</div>
+							<div class="span3 pull-right" >
+										Mark Complete
+								</div>
+								
 								<div class="span8 muted">
 									<h2>
 										<?php echo $item->title; ?>
 									</h2>
 								</div>
-								<div class="span5">
-									<strong></strong>
-
-								</div>
+								
 
 							</div>
 
@@ -292,18 +377,20 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 							<div class="span12">
 
 
-								<div class="span3 muted" id="projectid" onclick="changedata(1)">
+								<div class="span2 muted" id="projectid" onclick="changedata(1,<?php echo $item->task_id; ?>)">
 									<?php echo JText::_('COM_TASKMAN_TASKMAN_PROJECTS_LABEL');?>
 								</div>
+								<div class="span1" onclick="changedata(1,<?php echo $item->task_id; ?>)" > <i class="icon-edit"></i> </div>
 								<div class="span8">
-									<div id="distext"></div>
-									<div id="protexthide">
+									<div id="distext<?php echo $item->task_id; ?>"></div>
+									<div id="protexthide<?php echo $item->task_id; ?>">
 										<strong><?php 	echo $item->projects; ?> </strong>
 									</div>
-									<div id="protext">
-										<input type="text" id="valtext" name="protext"
+									<div id="protext<?php echo $item->task_id; ?>">
+										<input type="text" id="valtext<?php echo $item->task_id; ?>" name="protext"
 											class="input-medium" value="<?php 	echo $item->projects; ?>" />
-										<button name="but" onclick="saveProject()">Submit</button>
+									<input type="button" class="button" onclick="saveProject(<?php echo $item->task_id; ?>)" value="save"/>
+								<!-- <button name="but" onclick="saveProject(<?php echo $item->task_id; ?>)">Submit</button> -->
 									</div>
 
 								</div>
@@ -327,7 +414,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 								<div class="span3">
 									<?php 
 									$attribs = Array(
-											'onchange' => 'saveDate(this)',
+											'onchange' => "saveDate(this,$item->task_id)",
 											'style'=>'display:none;'
 									);
 							echo JHtml::calendar($item->duedate, 'duedate', 'duedate','%Y-%m-%d',$attribs );  ?>
@@ -340,21 +427,22 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 								<div class="span12">
 
 
-									<div class="span3 muted" id="projectid" onclick="changedata(2)">
+									<div class="span2 muted" id="projectid" onclick="changedata(2)">
 										<i class="icon-search"></i>
 										<?php echo JText::_('COM_TASKMAN_TASKMAN_TAGS_LABEL');?>
 
 									</div>
+									<div class="span1" onclick="changedata(2)" > <i class="icon-edit"></i> </div>
 									<div class="span8">
 
-										<div id="distag"></div>
-										<div id="tagshide">
+										<div id="distag<?php echo $item->task_id; ?>"></div>
+										<div id="tagshide<?php echo $item->task_id; ?>">
 											<strong><?php echo $item->tags; ?> </strong>
 										</div>
-										<div id="tagsshow">
-											<input type="text" id="valtags" name="tagstext"
+										<div id="tagsshow<?php echo $item->task_id; ?>">
+											<input type="text" id="valtags<?php echo $item->task_id; ?>" name="tagstext"
 												class="input-medium" value="<?php 	echo $item->tags; ?>" />
-											<button name="but2" onclick="saveTags()">Submit</button>
+											<button name="but2" onclick="saveTags(<?php echo $item->task_id; ?>)">Submit</button>
 										</div>
 									</div>
 
